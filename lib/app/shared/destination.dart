@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Destination {
@@ -8,8 +7,8 @@ class Destination {
 }
 
 const List<Destination> routes = <Destination>[
-  Destination('Search', Icons.search),
-  Destination('Bookings', Icons.bookmarks),
-  Destination('Notifications', Icons.notifications),
-  Destination('Profile', Icons.person)
+  Destination('Поиск', Icons.search),
+  Destination('Брони', Icons.bookmarks),
+  Destination('Уведомления', Icons.notifications),
+  Destination('Профиль', Icons.person)
 ];

@@ -1,21 +1,52 @@
 import 'package:dummy/app/pages/pitch-information.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class Search extends StatelessWidget {
+class SearchController {
+  void Function() scrollTop;
+}
+
+class Search extends StatefulWidget {
+  Search({this.navigatorKey, this.controller});
+  final GlobalKey<NavigatorState> navigatorKey;
+  final SearchController controller;
+
+  @override
+  _SearchState createState() => _SearchState(navigatorKey: navigatorKey, scrollController: controller);
+}
+
+class _SearchState extends State<Search> with AutomaticKeepAliveClientMixin<Search> {
+  _SearchState({this.navigatorKey, this.scrollController});
+  final scrollController;
+  final GlobalKey<NavigatorState> navigatorKey;
+
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      initialRoute: '/search',
-      routes: {
-        '/search': (context) => SearchPageTabController(),
-        '/search/pitch': (context) => PitchInformationPage()
-      }
+    super.build(context);
+    return Navigator(
+      initialRoute: 'search/',
+      key: navigatorKey,
+      onGenerateRoute: (RouteSettings settings) {
+        WidgetBuilder builder;
+        if (settings.name == 'search/') {
+          builder = (context) => SearchPageTabController(scrollController: scrollController);
+        } else if (settings.name == '/search/pitch') {
+          builder = (context) => PitchInformationPage();
+        } else {
+          throw Exception('Invalid route name: ${settings.name}');
+        }
+        return MaterialPageRoute(builder: builder, settings: settings);
+      },
     );
   }
 }
 
 class SearchPageTabController extends StatelessWidget {
+  SearchPageTabController({this.scrollController});
+  final scrollController;
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -39,7 +70,7 @@ class SearchPageTabController extends StatelessWidget {
           body: TabBarView(
             physics: NeverScrollableScrollPhysics(),
             children: [
-              PitchItemsCover(),
+              PitchItemsCover(scrollController: scrollController),
               Icon(Icons.map)
             ],
           )
@@ -50,25 +81,40 @@ class SearchPageTabController extends StatelessWidget {
 }
 
 class PitchItemsCover extends StatefulWidget {
+  PitchItemsCover({this.scrollController});
+  final scrollController;
+
   @override
-  _PitchItemsCoverState createState() => _PitchItemsCoverState();
+  _PitchItemsCoverState createState() => _PitchItemsCoverState(scrollController);
 }
 
 class _PitchItemsCoverState extends State<PitchItemsCover> with AutomaticKeepAliveClientMixin<PitchItemsCover> {
+  _PitchItemsCoverState(scrollController) {
+    scrollController.scrollTop = scrollTop;
+  }
   final List pitchItems = new List.generate(20, (index) => PitchItem()).toList();
+  ScrollController scrollController = ScrollController();
 
   @override
-  // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return SingleChildScrollView(
-        padding: EdgeInsets.symmetric(vertical: 5),
-        child: Column(
-          children: pitchItems,
-        )
+      controller: scrollController,
+      padding: EdgeInsets.symmetric(vertical: 5),
+      child: Column(
+        children: pitchItems,
+      )
+    );
+  }
+
+  void scrollTop () {
+    scrollController.animateTo(
+      0.0,
+      curve: Curves.easeOut,
+      duration: const Duration(milliseconds: 300),
     );
   }
 }
