@@ -10,33 +10,33 @@ class PitchInformationPage extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Column(
-            children: [
-              Container(
-                height: 220,
-                child: ImageCarousel()
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 15),
-                padding: EdgeInsets.symmetric(horizontal: 15),
-                child: Column(
-                  children: [
-                    Container(
-                      child: Text(
-                        'Мини футбольное поле',
-                        style: TextStyle(
-                          fontSize: 20
-                        )
-                      ),
-                      alignment: Alignment.centerLeft,
+          children: [
+            Container(
+              height: 220,
+              child: ImageCarousel()
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 15),
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              child: Column(
+                children: [
+                  Container(
+                    child: Text(
+                      'Мини футбольное поле',
+                      style: TextStyle(
+                        fontSize: 20
+                      )
                     ),
-                    Container(
-                      margin: EdgeInsets.only(top: 15),
-                      child: Text('Есть два поля, ворота, все как положено, чики пуки. Есть два поля, ворота, все как положено, чики пуки. Есть два поля, ворота, все как положено, чики пуки. Есть два поля, ворота, все как положено, чики пуки. Есть два поля, ворота, все как положено, чики пуки. Есть два поля, ворота, все как положено, чики пуки.')
-                    )
-                  ],
-                )
+                    alignment: Alignment.centerLeft,
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 15),
+                    child: Text('Есть два поля, ворота, все как положено, чики пуки. Есть два поля, ворота, все как положено, чики пуки. Есть два поля, ворота, все как положено, чики пуки. Есть два поля, ворота, все как положено, чики пуки. Есть два поля, ворота, все как положено, чики пуки. Есть два поля, ворота, все как положено, чики пуки.')
+                  )
+                ],
               )
-            ]
+            )
+          ]
         ),
       )
     );

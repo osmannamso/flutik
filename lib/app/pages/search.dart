@@ -32,7 +32,7 @@ class _SearchState extends State<Search> with AutomaticKeepAliveClientMixin<Sear
         WidgetBuilder builder;
         if (settings.name == 'search/') {
           builder = (context) => SearchPageTabController(scrollController: scrollController);
-        } else if (settings.name == '/search/pitch') {
+        } else if (settings.name == 'search/pitch') {
           builder = (context) => PitchInformationPage();
         } else {
           throw Exception('Invalid route name: ${settings.name}');
@@ -52,28 +52,28 @@ class SearchPageTabController extends StatelessWidget {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.amber[800],
-            bottom: TabBar(
-              indicatorColor: Colors.amber[100],
-              tabs: [
-                Tab(
-                    text: 'Списком'
-                ),
-                Tab(
-                    text: 'На карте'
-                ),
-              ],
-            ),
-            title: Text('Поиск'),
-          ),
-          body: TabBarView(
-            physics: NeverScrollableScrollPhysics(),
-            children: [
-              PitchItemsCover(scrollController: scrollController),
-              Icon(Icons.map)
+        appBar: AppBar(
+          backgroundColor: Colors.amber[800],
+          bottom: TabBar(
+            indicatorColor: Colors.amber[100],
+            tabs: [
+              Tab(
+                  text: 'Списком'
+              ),
+              Tab(
+                  text: 'На карте'
+              ),
             ],
-          )
+          ),
+          title: Text('Поиск'),
+        ),
+        body: TabBarView(
+          physics: NeverScrollableScrollPhysics(),
+          children: [
+            PitchItemsCover(scrollController: scrollController),
+            Icon(Icons.map)
+          ],
+        )
       ),
     );
   }
@@ -124,7 +124,7 @@ class PitchItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, '/search/pitch');
+        Navigator.pushNamed(context, 'search/pitch');
       },
       child: Container(
           child: PitchItemRow(),
@@ -151,14 +151,14 @@ class PitchItemRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image(
-            image: NetworkImage('https://i.pinimg.com/474x/98/e2/50/98e250ec387ad722631735e33246565b.jpg'),
-            width: 110,
-          ),
-          PitchItemRowLeft()
-        ]
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Image(
+          image: NetworkImage('https://i.pinimg.com/474x/98/e2/50/98e250ec387ad722631735e33246565b.jpg'),
+          width: 110,
+        ),
+        PitchItemRowLeft()
+      ]
     );
   }
 }
@@ -167,41 +167,40 @@ class PitchItemRowLeft extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: EdgeInsets.only(left: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-                '10 000 ТГ',
-                style: TextStyle(fontWeight: FontWeight.bold)
+      margin: EdgeInsets.only(left: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '10 000 ТГ',
+            style: TextStyle(fontWeight: FontWeight.bold)
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 5),
+            child: Text(
+              'Мини футбольное поле',
+              style: TextStyle(color: Colors.amber[800]),
             ),
-            Container(
-              margin: EdgeInsets.only(top: 5),
-              child: Text(
-                'Мини футбольное поле',
-                style: TextStyle(color: Colors.amber[800]),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 5),
-              child: Text('Абая Байтурсынова 45'),
-            ),
-            Container(
-                margin: EdgeInsets.only(top: 5),
-                child: Row(
-                  children: [
-                    Icon(Icons.star),
-                    Icon(Icons.star),
-                    Icon(Icons.star),
-                    Icon(Icons.star),
-                    Icon(Icons.star),
-                    Text('(36)')
-                  ],
-                )
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 5),
+            child: Text('Абая Байтурсынова 45'),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 5),
+            child: Row(
+              children: [
+                Icon(Icons.star),
+                Icon(Icons.star),
+                Icon(Icons.star),
+                Icon(Icons.star),
+                Icon(Icons.star),
+                Text('(36)')
+              ],
             )
-          ],
-        )
+          )
+        ],
+      )
     );
   }
-
 }

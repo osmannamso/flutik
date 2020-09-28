@@ -12,6 +12,7 @@ class App extends StatefulWidget {
 
 class _HomePageState extends State<App> with TickerProviderStateMixin<App> {
   final _searchController = SearchController();
+  final _bookingController = BookingController();
   int _currentIndex = 3;
   final _navigatorKeys = [
     GlobalKey<NavigatorState>(),
@@ -26,7 +27,11 @@ class _HomePageState extends State<App> with TickerProviderStateMixin<App> {
       if (isFirstRoute) {
         _navigatorKeys[index].currentState.popUntil((r) => r.isFirst);
       } else {
-        _searchController.scrollTop();
+        if (index == 0) {
+          _searchController.scrollTop();
+        } else if (index == 1) {
+          _bookingController.scrollTop();
+        }
       }
     } else {
       setState(() {
@@ -60,22 +65,23 @@ class _HomePageState extends State<App> with TickerProviderStateMixin<App> {
               )
             ),
             Offstage(
-                offstage: _currentIndex != 1,
-                child: Bookings(
-                  navigatorKey: _navigatorKeys[1]
-                )
+              offstage: _currentIndex != 1,
+              child: Bookings(
+                navigatorKey: _navigatorKeys[1],
+                controller: _bookingController
+              )
             ),
             Offstage(
-                offstage: _currentIndex != 2,
-                child: Notifications(
-                  navigatorKey: _navigatorKeys[2]
-                )
+              offstage: _currentIndex != 2,
+              child: Notifications(
+                navigatorKey: _navigatorKeys[2]
+              )
             ),
             Offstage(
-                offstage: _currentIndex != 3,
-                child: Profile(
-                  navigatorKey: _navigatorKeys[3]
-                )
+              offstage: _currentIndex != 3,
+              child: Profile(
+                navigatorKey: _navigatorKeys[3]
+              )
             )
           ],
         ),
