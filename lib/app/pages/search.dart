@@ -1,5 +1,6 @@
 import 'package:dummy/app/pages/pitch-information.dart';
 import 'package:flutter/material.dart';
+import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class SearchController {
   void Function() scrollTop;
@@ -71,13 +72,39 @@ class SearchPageTabController extends StatelessWidget {
           physics: NeverScrollableScrollPhysics(),
           children: [
             PitchItemsCover(scrollController: scrollController),
-            Icon(Icons.map)
+            YandexMapCover()
           ],
         )
       ),
     );
   }
+}
 
+class YandexMapCover extends StatefulWidget {
+  @override
+  _YandexMapCoverState createState() => _YandexMapCoverState();
+}
+
+class _YandexMapCoverState extends State<YandexMapCover> with AutomaticKeepAliveClientMixin<YandexMapCover> {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+
+    return YandexMap(
+      onMapCreated: (controller) {
+        controller.move(
+          zoom: 13,
+          point: Point(
+            latitude: 43.238293,
+            longitude: 76.945465
+          )
+        );
+      },
+    );
+  }
 }
 
 class PitchItemsCover extends StatefulWidget {

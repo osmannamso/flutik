@@ -51,6 +51,35 @@ class _HomePageState extends State<App> with TickerProviderStateMixin<App> {
             return false;
           }
         }
+        if (isFirstRouteInCurrentTab) {
+          final quit = await showDialog(context: context, child:
+            AlertDialog(
+                content: Text('Вы действительно хотите выйти?'),
+                actions: [
+                  FlatButton(
+                    child: Text(
+                      'Выйти',
+                      style: TextStyle(color: Colors.amber[800]),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
+                  ),
+                  FlatButton(
+                    child: Text(
+                      'Отмена',
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                  )
+                ]
+            )
+          );
+
+          return quit;
+        }
 
         return isFirstRouteInCurrentTab;
       },
