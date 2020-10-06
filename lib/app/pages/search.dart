@@ -1,5 +1,8 @@
 import 'package:dummy/app/pages/pitch-information.dart';
+import 'package:dummy/values/variables.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class SearchController {
@@ -86,6 +89,10 @@ class YandexMapCover extends StatefulWidget {
 }
 
 class _YandexMapCoverState extends State<YandexMapCover> with AutomaticKeepAliveClientMixin<YandexMapCover> {
+  Position position = Position(latitude: DEFAULT_MAP_CENTER['lat'], longitude: DEFAULT_MAP_CENTER['lon']);
+  YandexMapController yandexMapController;
+  List<Widget> extraWidgets = [];
+
   @override
   bool get wantKeepAlive => true;
 
@@ -93,17 +100,152 @@ class _YandexMapCoverState extends State<YandexMapCover> with AutomaticKeepAlive
   Widget build(BuildContext context) {
     super.build(context);
 
-    return YandexMap(
-      onMapCreated: (controller) {
-        controller.move(
-          zoom: 13,
-          point: Point(
-            latitude: 43.238293,
-            longitude: 76.945465
-          )
-        );
-      },
+    return Stack(
+      children: [
+        YandexMap(
+          onMapCreated: (controller) async {
+            yandexMapController = controller;
+            final Position gotPosition = await getLastKnownPosition();
+            if (gotPosition != null) {
+              final ByteData meIcon = await rootBundle.load('assets/icons/myself-position.png');
+              position = gotPosition;
+              controller.addPlacemark(
+                  Placemark(
+                      point: Point(
+                          latitude: gotPosition.latitude,
+                          longitude: gotPosition.longitude
+                      ),
+                      rawImageData: meIcon.buffer.asUint8List()
+                  )
+              );
+            }
+
+            // Delete this lines
+            final ByteData mapItem = await rootBundle.load('assets/icons/map-item.png');
+            controller.addPlacemark(
+                Placemark(
+                    point: Point(
+                        latitude: DEFAULT_MAP_CENTER['lat'],
+                        longitude: DEFAULT_MAP_CENTER['lon']
+                    ),
+                    rawImageData: mapItem.buffer.asUint8List(),
+                    onTap: (point) async {
+                      showPitchInfo();
+                    }
+                )
+            );
+            // Delete this lines
+            moveToStartPosition(controller, duration: 0.0);
+          }
+        ),
+        Positioned(
+          right: 20,
+          bottom: 10,
+          child: Column(
+            children: [
+              InkWell(
+                  onTap: () async {
+                    moveToStartPosition(yandexMapController);
+                  },
+                  child: Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.3),
+                            spreadRadius: 1,
+                            blurRadius: 7,
+                            offset: Offset(0, 2), // changes position of shadow
+                          )
+                        ]
+                    ),
+                    child: Icon(
+                        Icons.gps_fixed_rounded
+                    ),
+                  )
+              )
+            ],
+          ),
+        ),
+        ...extraWidgets
+      ],
     );
+  }
+
+  moveToStartPosition(controller, {duration = 0.2}) {
+    controller.move(
+      zoom: DEFAULT_MAP_ZOOM,
+      point: Point(
+          latitude: position.latitude,
+          longitude: position.longitude
+      ),
+      animation: MapAnimation(
+        duration: duration
+      )
+    );
+  }
+
+  showPitchInfo() {
+    setState(() {
+      extraWidgets.add(
+        Positioned(
+          bottom: 0,
+          child: Container(
+            height: 160,
+            width: MediaQuery.of(context).size.width,
+            color: Colors.white,
+            child: Column(
+              children: [
+                InkWell(
+                  onTap: () async {
+                    if (extraWidgets.isNotEmpty) {
+                      setState(() {
+                        extraWidgets.removeLast();
+                      });
+                    }
+                  },
+                  child: Container(
+                    alignment: Alignment.topCenter,
+                    width: 200,
+                    height: 3,
+                    margin: EdgeInsets.only(top: 6, bottom: 9),
+                    child: SizedBox.shrink(),
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(5)
+                    ),
+                  )
+                ),
+                InkWell(
+                  onTap: () async {
+                    Navigator.pushNamed(context, 'search/pitch');
+                  },
+                  child: Container(
+                    height: 130,
+                    width: double.infinity,
+                    child: Container(
+                      margin: EdgeInsets.only(top: 5),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Image(
+                            image: NetworkImage('https://i.pinimg.com/474x/98/e2/50/98e250ec387ad722631735e33246565b.jpg'),
+                            width: 110,
+                          ),
+                          PitchItemRowLeft()
+                        ]
+                      )
+                    ),
+                  )
+                )
+              ],
+            )
+          )
+        )
+      );
+    });
   }
 }
 
